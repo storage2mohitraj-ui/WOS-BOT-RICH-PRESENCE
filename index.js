@@ -85,11 +85,26 @@ client.once("ready", () => {
   ];
 
   let i = 0;
-  setInterval(() => {
-    const status = statuses[i];
-    client.user.setActivity(status);
-    i = (i + 1) % statuses.length;
-  }, 10000); // Change every 10 seconds
+
+  // Set initial status immediately
+  const setStatus = () => {
+    try {
+      const status = statuses[i];
+      client.user.setActivity(status);
+      console.log(`🔄 Status updated [${i + 1}/${statuses.length}]: ${status.name}`);
+      i = (i + 1) % statuses.length; // Loop back to 0 when reaching the end
+    } catch (error) {
+      console.error("❌ Error setting status:", error);
+    }
+  };
+
+  // Set initial status
+  setStatus();
+
+  // Update status every 10 seconds in an endless loop
+  setInterval(setStatus, 10000); // Change every 10 seconds
+
+  console.log(`✅ Status rotation started! Cycling through ${statuses.length} statuses every 10 seconds.`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
